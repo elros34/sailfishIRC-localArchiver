@@ -1,5 +1,5 @@
 # sailfishIRC-log-2-Palintext
-Maintain local PLAINTEXT archive of sailfishos-porters IRC log site 'http://www.merproject.org/logs/%23sailfishos-porters'
+Maintain local PLAINTEXT archive of sailfishos-porters IRC log site 'https://irclogs.sailfishos.org/logs/%23sailfishos-porters'
 Download and Generate plaintext of not-yet-downloaded IRC logs
 
 Maintain local pasties archive using links seen in the IRC logs

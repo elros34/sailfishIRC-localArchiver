@@ -2,7 +2,7 @@
 
 # Author	:	starkDbl07
 # Date		:	2015-03-25
-# Purpose	:	Download plaintext of not-yet-downloaded sailfish-irc logs 'http://www.merproject.org/logs/%23sailfishos-porters'
+# Purpose	:	Download plaintext of not-yet-downloaded sailfish-irc logs 'https://irclogs.sailfishos.org/logs/%23sailfishos-porters'
 
 archive_dir="archive"
 temp_dir="temp"
@@ -15,13 +15,20 @@ source includes/pasties.func
 
 function getArchiveForDate {
 	date="$1"
+	year="$(date -d $1 +%Y)"
+	[ -z "$year" ] && exit 1
 	#curl -s "http://www.merproject.org/logs/%23sailfishos-porters/%23sailfishos-porters.$date.log.html" | grep 'class="nick"' | sed -e 's^<tr id="t\([^"]*\)"><[^>]*>\([^<]*\)</th><td[^>]*>\(.*\)^\1  \2    \3^; s^</td><[^<]*><[^<]*>[^>]*</a></td></tr>$^^' > $archive_dir/$date.txt
-	curl -s "http://www.merproject.org/logs/%23sailfishos-porters/%23sailfishos-porters.$date.log" > $archive_dir/$date.txt
+	curl -s "https://irclogs.sailfishos.org/logs/%23sailfishos-porters/$year/%23sailfishos-porters.$date.log" > $archive_dir/$date.txt
 	updateIRCLogTimestamp "$date.txt"
 }
 
+# time stamps in YYYY-MM-DD format
 function getIndexes {
-	curl -s "http://www.merproject.org/logs/%23sailfishos-porters/index.html" | grep '</li>' | sed -n '2,$p'| awk -F'>' '{print $3}' | awk '{print $1}' | sort -n
+	years="$(curl -s https://irclogs.sailfishos.org/logs/%23sailfishos-porters/index.html | awk -F'[><]' '/^<li/ {print $5}' | sort -n)"
+	for year in $years
+	do
+		curl -s "https://irclogs.sailfishos.org/logs/%23sailfishos-porters/$year/index.html" | awk -F'[> ]' '/^<li/ {print $4}' | grep -v Latest | sort -n
+	done
 }
 
 function updateIRC {
